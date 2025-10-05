@@ -10,6 +10,7 @@ const MiniJuegoPesca = ({ pecesDisponibles = [], nombreParque = "el Parque" }) =
     const [mensaje, setMensaje] = useState(`¡A pescar en ${nombreParque}!`);
     const [capturas, setCapturas] = useState([]);
 
+    const gameTimeoutRef = useRef(null);
     const tensionIntervalRef = useRef(null);
 
     const obtenerPezAleatorio = () => {
@@ -19,31 +20,28 @@ const MiniJuegoPesca = ({ pecesDisponibles = [], nombreParque = "el Parque" }) =
     };
 
     const lanzarSenuelo = () => {
-        if (estadoJuego !== ESTADOS_MINI_JUEGO.INICIO) return; // Prevenir múltiples lanzamientos
+        if (estadoJuego !== ESTADOS_MINI_JUEGO.INICIO) return;
         
         setEstadoJuego(ESTADOS_MINI_JUEGO.LANZANDO);
         setMensaje("Lanzando señuelo a las profundidades...");
         setPezActual(null);
         setTension(0);
 
-        setTimeout(() => {
+        gameTimeoutRef.current = setTimeout(() => {
             setEstadoJuego(ESTADOS_MINI_JUEGO.ESPERANDO);
             setMensaje("El agua murmura... esperando una picada... 🎣");
             const tiempoHastaPicada = Math.random() * TIEMPO_ESPERA_MINI_MAX + 1000;
             
-            setTimeout(() => {
-                // Asegurarse de que el juego no se haya reiniciado mientras esperaba
-                if (estadoJuego === ESTADOS_MINI_JUEGO.ESPERANDO) {
-                    const pezQuePica = obtenerPezAleatorio();
-                    if (pezQuePica) {
-                        setPezActual(pezQuePica); // El pez se establece aquí, ANTES de la lucha
-                        setEstadoJuego(ESTADOS_MINI_JUEGO.PICADA);
-                        setMensaje(`¡Una poderosa picada! ¡Es un ${pezQuePica.nombre}!`);
-                        iniciarLucha(pezQuePica);
-                    } else {
-                        setMensaje("Parece que hoy no quieren picar. ¡Intenta de nuevo!");
-                        setEstadoJuego(ESTADOS_MINI_JUEGO.INICIO);
-                    }
+            gameTimeoutRef.current = setTimeout(() => {
+                const pezQuePica = obtenerPezAleatorio();
+                if (pezQuePica) {
+                    setPezActual(pezQuePica); // Establece el pez para que se renderice
+                    setEstadoJuego(ESTADOS_MINI_JUEGO.PICADA);
+                    setMensaje(`¡Una poderosa picada! ¡Es un ${pezQuePica.nombre}!`);
+                    iniciarLucha(pezQuePica); // Pasa el pez directamente para evitar delays de estado
+                } else {
+                    setMensaje("Parece que hoy no quieren picar. ¡Intenta de nuevo!");
+                    setEstadoJuego(ESTADOS_MINI_JUEGO.INICIO);
                 }
             }, tiempoHastaPicada);
         }, DURACION_LANZAMIENTO_MINI);
@@ -51,7 +49,7 @@ const MiniJuegoPesca = ({ pecesDisponibles = [], nombreParque = "el Parque" }) =
 
     const iniciarLucha = (pez) => {
         setEstadoJuego(ESTADOS_MINI_JUEGO.LUCHANDO);
-        let luchaTiempoRestante = 4;
+        let luchaTiempoRestante = 4; // Un poco más de tiempo para la lucha
         setMensaje(`¡Luchando con el ${pez.nombre}! ¡No lo dejes escapar!`);
 
         tensionIntervalRef.current = setInterval(() => {
@@ -77,7 +75,6 @@ const MiniJuegoPesca = ({ pecesDisponibles = [], nombreParque = "el Parque" }) =
         }, 1000);
     };
 
-    // Función para reiniciar el mini-juego y volver a pescar
     const reiniciarMiniJuego = () => {
         setEstadoJuego(ESTADOS_MINI_JUEGO.INICIO);
         setPezActual(null);
@@ -86,10 +83,9 @@ const MiniJuegoPesca = ({ pecesDisponibles = [], nombreParque = "el Parque" }) =
     };
 
     useEffect(() => {
-        return () => {
-            if (tensionIntervalRef.current) {
-                clearInterval(tensionIntervalRef.current);
-            }
+        return () => { // Limpia todos los temporizadores al desmontar el componente
+            if (tensionIntervalRef.current) clearInterval(tensionIntervalRef.current);
+            if (gameTimeoutRef.current) clearTimeout(gameTimeoutRef.current);
         };
     }, []);
 
@@ -102,9 +98,8 @@ const MiniJuegoPesca = ({ pecesDisponibles = [], nombreParque = "el Parque" }) =
                     </button>
                 );
             case ESTADOS_MINI_JUEGO.LANZANDO:
-                return <p>Lanzando tu línea a las misteriosas aguas...</p>;
             case ESTADOS_MINI_JUEGO.ESPERANDO:
-                return <p>El susurro del río te acompaña... ¿un pez a la vista?</p>;
+                return <p>...</p>; // El mensaje principal ya está arriba
             case ESTADOS_MINI_JUEGO.PICADA:
             case ESTADOS_MINI_JUEGO.LUCHANDO:
                 return (
@@ -113,7 +108,7 @@ const MiniJuegoPesca = ({ pecesDisponibles = [], nombreParque = "el Parque" }) =
                         <div className="tension-bar-container">
                             <div className="tension-bar" style={{ width: `${tension}%` }}></div>
                         </div>
-                        <p>¡Tensión: {tension.toFixed(0)}%! ¡Mantenlo con fuerza!</p>
+                        <p>¡Tensión: {tension.toFixed(0)}%!</p>
                     </>
                 );
             case ESTADOS_MINI_JUEGO.CAPTURADO:
