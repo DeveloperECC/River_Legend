@@ -1,0 +1,200 @@
+/* src/componentes/MiniJuegoPesca/MiniJuegoPesca.css */
+.mini-juego-pesca-container {
+    background-color: #004d40;
+    color: white;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    margin: 20px auto;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 450px;
+    justify-content: space-around;
+    background-image: url('https://w0.peakpx.com/wallpaper/1004/722/HD-wallpaper-lake-forest-mountain-trees.jpg'); /* Fondo de juego de río/lago */
+    background-size: cover;
+    background-position: center;
+}
+.mini-juego-pesca-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6); /* Superposición oscura para el texto */
+    border-radius: 15px;
+}
+.mini-juego-pesca-container > * {
+    position: relative;
+    z-index: 1; /* Asegura que el contenido esté encima de la superposición */
+}
+
+
+.mini-juego-pesca-container h2 {
+    font-size: 2rem;
+    color: #a7ffeb;
+    margin-bottom: 20px;
+    font-weight: 700;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+}
+
+.mini-game-area {
+    background-color: rgba(0, 0, 0, 0.5); /* Más oscuro para legibilidad */
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    min-height: 180px; /* Un poco más de altura */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+.mini-game-message {
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin-bottom: 15px;
+    color: #e0f2f1;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.mini-btn-action {
+    background-color: #00c853;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 200, 83, 0.4);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.mini-btn-action:hover {
+    background-color: #00a040;
+    transform: translateY(-2px);
+}
+
+.mini-pez-luchando, .mini-pez-capturado {
+    width: 140px; /* Un poco más grandes */
+    height: 90px;
+    object-fit: contain;
+    margin: 10px 0;
+    animation: pezFlotarLuchar 1s ease-in-out infinite alternate;
+}
+
+.mini-pez-capturado {
+    animation: pezCapturadoPop 0.5s ease-out;
+}
+
+.mini-pez-escapado {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin: 10px 0;
+    filter: grayscale(100%);
+}
+
+.tension-bar-container {
+    width: 80%;
+    height: 15px;
+    background-color: #333;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 10px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.tension-bar {
+    height: 100%;
+    background-color: #ff9800; /* Naranja para la tensión */
+    transition: width 0.3s ease-out;
+    border-radius: 8px;
+}
+
+
+.mini-capturas {
+    margin-top: 20px;
+    width: 90%;
+}
+
+.mini-capturas h3 {
+    font-size: 1.4rem;
+    color: #b2dfdb;
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.mini-capturas-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    background-color: rgba(255, 255, 255, 0.15); /* Fondo más claro para las capturas */
+    padding: 10px;
+    border-radius: 8px;
+    min-height: 70px; /* Más espacio */
+}
+
+.mini-captura-pez {
+    width: 70px;
+    height: 50px;
+    object-fit: contain;
+    background-color: rgba(255, 255, 255, 0.25);
+    border-radius: 5px;
+    padding: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.no-capturas {
+    font-style: italic;
+    color: #e0f2f1;
+    opacity: 0.8;
+}
+
+/* Animaciones */
+@keyframes pezFlotarLuchar {
+    0% { transform: translateY(0px) rotate(0deg); filter: brightness(1); }
+    50% { transform: translateY(-8px) rotate(8deg); filter: brightness(1.2); }
+    100% { transform: translateY(0px) rotate(-8deg); filter: brightness(1); }
+}
+
+@keyframes pezCapturadoPop {
+    0% { transform: scale(0.5) rotate(0deg); opacity: 0; }
+    80% { transform: scale(1.1) rotate(5deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+@media (max-width: 480px) {
+    .mini-juego-pesca-container h2 {
+        font-size: 1.6rem;
+    }
+    .mini-game-message {
+        font-size: 1.1rem;
+    }
+    .mini-pez-luchando, .mini-pez-capturado {
+        width: 120px;
+        height: 80px;
+    }
+    .mini-btn-action {
+        padding: 10px 20px;
+        font-size: 1rem;
+    }
+    .mini-captura-pez {
+        width: 60px;
+        height: 45px;
+    }
+    .tension-bar-container {
+        width: 90%;
+    }
+}

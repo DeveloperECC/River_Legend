@@ -1,0 +1,66 @@
+/* src/paginas/ParquesLista.css */
+.parques-lista-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    background-color: #f0f4f7;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.main-title {
+    font-size: 3rem;
+    color: #00796b; /* Un verde azulado que evoca ríos */
+    margin-bottom: 10px;
+    font-weight: 800;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: 1px; /* Para darle un toque más de "leyenda" */
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: #388e3c;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+
+.loading-message, .error-message {
+    font-size: 1.5rem;
+    color: #333;
+    padding: 50px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.error-message {
+    color: #d32f2f;
+}
+
+.parques-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    justify-items: center;
+}
+
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 2.5rem;
+    }
+    .subtitle {
+        font-size: 1rem;
+    }
+    .parques-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-title {
+        font-size: 2rem;
+    }
+    .parques-lista-container {
+        padding: 10px;
+    }
+}

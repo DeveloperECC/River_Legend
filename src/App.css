@@ -1,0 +1,69 @@
+/* src/App.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+html, body, #root, .App {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box; /* Crucial para evitar desbordamientos */
+}
+
+body {
+  background-color: #f0f4f7; /* Color de fondo general de la app */
+  color: #333;
+  line-height: 1.6;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden; /* Evita barras de desplazamiento horizontal */
+  position: relative;
+  /* El video de fondo se debería renderizar en un nivel inferior si lo integras aquí */
+  /* Si el video de fondo es global a toda la app, sus estilos de z-index deben ser muy bajos */
+  /* Por ejemplo, en el componente VideoBackground.jsx que tenías, el z-index: -10 es correcto. */
+  /* Asegúrate de que VideoBackground se renderice directamente en App.jsx si quieres que esté en todas las páginas */
+}
+
+/* Si quieres que el video de fondo se vea en todas las páginas, lo harías así: */
+/*
+// src/App.jsx
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import ParquesLista from './paginas/ParquesLista';
+import ParqueDetalle from './paginas/ParqueDetalle';
+import VideoBackground from './componentes/multimedia/VideoBackground/VideoBackground'; // Asumiendo que esta es la ruta
+import './App.css';
+
+function App() {
+  return (
+    <Router>
+      <div className="App">
+        <VideoBackground /> // Aquí se renderiza el fondo
+        <div className="app-content"> // Este div contendría el resto de la app
+            <Routes>
+                <Route path="/" element={<ParquesLista />} />
+                <Route path="/parque/:id" element={<ParqueDetalle />} />
+            </Routes>
+        </div>
+      </div>
+    </Router>
+  );
+}
+
+// Y en App.css para .app-content (si lo añades):
+.app-content {
+    position: relative;
+    z-index: 1; // Para que el contenido esté encima del video (-10)
+    width: 100%;
+    min-height: 100vh;
+}
+*/
