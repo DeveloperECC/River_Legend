@@ -1,7 +1,7 @@
 // src/componentes/MiniJuegoPesca/MiniJuegoPesca.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { ESTADOS_MINI_JUEGO, DURACION_LANZAMIENTO_MINI, TIEMPO_ESPERA_MINI_MAX } from '../../data/constantesJuego';
-import './MiniJuegoPesca.css'; // Asegúrate de crear este CSS
+import './MiniJuegoPesca.css';
 
 const MiniJuegoPesca = ({ pecesDisponibles = [], nombreParque = "el Parque" }) => {
     const [estadoJuego, setEstadoJuego] = useState(ESTADOS_MINI_JUEGO.INICIO);
@@ -35,7 +35,6 @@ const MiniJuegoPesca = ({ pecesDisponibles = [], nombreParque = "el Parque" }) =
                     setPezActual(pezQuePica);
                     setEstadoJuego(ESTADOS_MINI_JUEGO.PICADA);
                     setMensaje(`¡${pezQuePica.nombre} ha picado! ¡Recoge!`);
-                    // Iniciar un temporizador o una lógica de tensión para la lucha
                     iniciarLucha();
                 } else {
                     setMensaje("Nada picó esta vez. ¡Intenta de nuevo!");
@@ -47,32 +46,35 @@ const MiniJuegoPesca = ({ pecesDisponibles = [], nombreParque = "el Parque" }) =
 
     const iniciarLucha = () => {
         setEstadoJuego(ESTADOS_MINI_JUEGO.LUCHANDO);
-        let luchaTiempoRestante = 3; // 3 segundos de lucha simplificada
-        setMensaje(`¡Luchando con el ${pezActual.nombre}!`);
+        let luchaTiempoRestante = 4; // Un poco más de tiempo para la lucha
+        setMensaje(`¡Luchando con el ${pezActual.nombre}! ¡No lo dejes escapar!`);
 
         tensionIntervalRef.current = setInterval(() => {
             luchaTiempoRestante--;
-            setTension(prev => Math.min(100, prev + Math.random() * 30 - 10)); // Tensión aleatoria
+            setTension(prev => {
+                const nuevaTension = prev + Math.random() * 40 - 20; // Más variación en la tensión
+                return Math.max(0, Math.min(100, nuevaTension)); // Asegura que esté entre 0 y 100
+            });
             
             if (luchaTiempoRestante <= 0) {
                 clearInterval(tensionIntervalRef.current);
-                const exito = Math.random() > 0.3; // 70% de éxito en la pesca simplificada
+                const exito = Math.random() * 10 > pezActual.dificultad; // El éxito depende de la dificultad del pez
 
                 if (exito) {
                     setEstadoJuego(ESTADOS_MINI_JUEGO.CAPTURADO);
-                    setMensaje(`¡Has capturado un ${pezActual.nombre}! 🎉`);
+                    setMensaje(`¡Felicidades! Has capturado un majestuoso ${pezActual.nombre}! 🎉`);
                     setCapturas(prev => [...prev, pezActual]);
                 } else {
                     setEstadoJuego(ESTADOS_MINI_JUEGO.PERDIDO);
-                    setMensaje(`¡El ${pezActual.nombre} se escapó! 💔`);
+                    setMensaje(`¡Oh no! El ${pezActual.nombre} era demasiado escurridizo y se escapó. 💔`);
                 }
-                setTimeout(() => setEstadoJuego(ESTADOS_MINI_JUEGO.INICIO), 2000); // Volver al inicio
+                setTimeout(() => setEstadoJuego(ESTADOS_MINI_JUEGO.INICIO), 3000); // Volver al inicio después de 3 segundos
             }
-        }, 1000); // Cada segundo
+        }, 1000);
     };
 
     useEffect(() => {
-        return () => { // Limpia el intervalo al desmontar el componente
+        return () => {
             if (tensionIntervalRef.current) {
                 clearInterval(tensionIntervalRef.current);
             }
@@ -80,50 +82,51 @@ const MiniJuegoPesca = ({ pecesDisponibles = [], nombreParque = "el Parque" }) =
     }, []);
 
     const renderContenido = () => {
-        switch (estadoJuego) {
-            case ESTADOS_MINI_JUEGO.INICIO:
-                return (
+        return (
+            <>
+                {estadoJuego === ESTADOS_MINI_JUEGO.INICIO && (
                     <button className="mini-btn-action" onClick={lanzarSenuelo}>
                         Lanzar Señuelo
                     </button>
-                );
-            case ESTADOS_MINI_JUEGO.LANZANDO:
-                return <p>Lanzando...</p>;
-            case ESTADOS_MINI_JUEGO.ESPERANDO:
-                return <p>Esperando picada...</p>;
-            case ESTADOS_MINI_JUEGO.PICADA:
-            case ESTADOS_MINI_JUEGO.LUCHANDO:
-                return (
+                )}
+                {(estadoJuego === ESTADOS_MINI_JUEGO.LANZANDO || estadoJuego === ESTADOS_MINI_JUEGO.ESPERANDO) && (
+                    <p>{mensaje}</p> // Muestra el mensaje de estado directamente
+                )}
+                {(estadoJuego === ESTADOS_MINI_JUEGO.PICADA || estadoJuego === ESTADOS_MINI_JUEGO.LUCHANDO) && (
                     <>
                         <img src={pezActual?.imagen} alt={pezActual?.nombre} className="mini-pez-luchando" />
-                        <p>¡Tensión: {tension.toFixed(0)}%!</p>
-                        {/* Aquí podrías añadir un botón "Recoger" / "Soltar" si quieres más interactividad */}
+                        <div className="tension-bar-container">
+                            <div className="tension-bar" style={{ width: `${tension}%` }}></div>
+                        </div>
+                        <p>¡Tensión: {tension.toFixed(0)}%! ¡Mantenlo con fuerza!</p>
                     </>
-                );
-            case ESTADOS_MINI_JUEGO.CAPTURADO:
-                return (
+                )}
+                {estadoJuego === ESTADOS_MINI_JUEGO.CAPTURADO && (
                     <>
                         <img src={pezActual?.imagen} alt={pezActual?.nombre} className="mini-pez-capturado" />
                         <p>¡Capturado: {pezActual?.nombre}!</p>
                     </>
-                );
-            case ESTADOS_MINI_JUEGO.PERDIDO:
-                return (
+                )}
+                {estadoJuego === ESTADOS_MINI_JUEGO.PERDIDO && (
                     <>
-                        <img src="https://via.placeholder.com/100x100?text=Fish+Escaped" alt="Pez Escapado" className="mini-pez-escapado" />
+                        <img 
+                            src="/assets/images/pez_escapado.png" // Intenta usar esta imagen si la tienes
+                            onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/100x100?text=Fish+Escaped" }} // Fallback
+                            alt="Pez Escapado" 
+                            className="mini-pez-escapado" 
+                        />
                         <p>¡El pez se escapó!</p>
                     </>
-                );
-            default:
-                return null;
-        }
+                )}
+            </>
+        );
     };
 
     return (
         <div className="mini-juego-pesca-container">
-            <h2>Mini Juego de Pesca en {nombreParque}</h2>
+            <h2>¡Aventúrate en {nombreParque}!</h2>
             <div className="mini-game-area">
-                <p className="mini-game-message">{mensaje}</p>
+                <p className="mini-game-message">{mensaje}</p> {/* Mantengo este p para mensajes generales */}
                 {renderContenido()}
             </div>
             <div className="mini-capturas">
@@ -132,6 +135,7 @@ const MiniJuegoPesca = ({ pecesDisponibles = [], nombreParque = "el Parque" }) =
                     {capturas.map((pez, index) => (
                         <img key={index} src={pez.imagen} alt={pez.nombre} className="mini-captura-pez" title={pez.nombre} />
                     ))}
+                    {capturas.length === 0 && <p className="no-capturas">Aún no has capturado nada aquí. ¡Demuestra tus habilidades!</p>}
                 </div>
             </div>
         </div>
