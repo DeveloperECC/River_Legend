@@ -8,7 +8,7 @@
     text-align: center;
     max-width: 500px;
     width: 90%;
-    margin: 20px auto;
+    /* margin: 20px auto; */ /* ELIMINADO para permitir centrado por flexbox del padre */
     font-family: 'Inter', sans-serif;
     position: relative;
     box-sizing: border-box;
@@ -66,7 +66,7 @@
     margin-bottom: 15px;
     color: #e0f2f1;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-    min-height: 40px; /* Espacio para el mensaje */
+    min-height: 40px; /* Espacio para el mensaje, evita que el layout salte */
 }
 
 .mini-btn-action {
@@ -89,7 +89,7 @@
 
 /* --- NUEVO ESTILO PARA EL BOTÓN DE REINICIO --- */
 .mini-btn-action.restart {
-    margin-top: 15px; /* Espacio entre la imagen y el botón */
+    margin-top: 15px; /* Espacio entre la imagen/mensaje y el botón */
     background-color: #304ffe; /* Azul para reiniciar */
     box-shadow: 0 4px 8px rgba(48, 79, 254, 0.4);
 }
@@ -115,13 +115,13 @@
     height: 120px;
     object-fit: contain;
     margin: 10px 0;
-    filter: grayscale(80%) opacity(0.7); /* Efecto más sutil */
+    filter: grayscale(80%) opacity(0.7);
 }
 
 .tension-bar-container {
     width: 80%;
     height: 15px;
-    background-color: rgba(0,0,0,0.5); /* Fondo más oscuro */
+    background-color: rgba(0,0,0,0.5);
     border: 1px solid rgba(255,255,255,0.2);
     border-radius: 8px;
     overflow: hidden;
@@ -174,7 +174,7 @@
     font-style: italic;
     color: #e0f2f1;
     opacity: 0.8;
-    align-self: center; /* Centra el texto si no hay capturas */
+    align-self: center;
     padding: 10px;
 }
 
